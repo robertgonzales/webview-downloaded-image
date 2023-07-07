@@ -44,7 +44,7 @@ export default function App() {
 
   return (
     <WebView
-      style={Dimensions.get("window")}
+      style={{ flex: 1 }}
       source={{ html }}
       originWhitelist={["*"]}
       mixedContentMode="always"

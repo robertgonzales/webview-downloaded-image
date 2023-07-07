@@ -1,0 +1,3 @@
+- Install node modules: `npm install`
+- Start the Expo server: `npx expo start`
+- Open in iOS Simulator: press `i`
