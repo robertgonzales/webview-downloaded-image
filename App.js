@@ -1,9 +1,11 @@
 import * as FileSystem from "expo-file-system"
 import { useEffect, useState } from "react"
-import { ActivityIndicator, Dimensions } from "react-native"
+import { ActivityIndicator } from "react-native"
 import { WebView } from "react-native-webview"
 
-const directory = FileSystem.documentDirectory + "downloads/"
+const image = `https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Pachysentis_lenti.jpg/440px-Pachysentis_lenti.jpg`
+
+const imagePath = FileSystem.documentDirectory + "image.jpg"
 
 const html = `
 <!DOCTYPE html>
@@ -15,12 +17,12 @@ const html = `
   </head>
   <body>
     <h1>Image Download Test</h1>
-    <img src="${directory}image.jpg" alt="image?" />
+    <img src="${imagePath}" alt="image?" />
   </body>
 </html>
 `
 
-const image = `https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Pachysentis_lenti.jpg/440px-Pachysentis_lenti.jpg`
+const htmlPath = FileSystem.documentDirectory + "index.html"
 
 export default function App() {
   const [ready, setReady] = useState(false)
@@ -30,9 +32,8 @@ export default function App() {
   }, [])
 
   async function downloadImage() {
-    await FileSystem.deleteAsync(directory, { idempotent: true })
-    await FileSystem.makeDirectoryAsync(directory)
-    await FileSystem.downloadAsync(image, directory + "image.jpg")
+    await FileSystem.writeAsStringAsync(htmlPath, html)
+    await FileSystem.downloadAsync(image, imagePath)
     setReady(true)
   }
 
@@ -40,15 +41,13 @@ export default function App() {
     return <ActivityIndicator style={{ flex: 1 }} />
   }
 
-  console.log(directory + "image.jpg") // pasting this in your browser loads the image just fine
-
   return (
     <WebView
       style={{ flex: 1 }}
-      source={{ html }}
+      source={{ uri: htmlPath }}
       originWhitelist={["*"]}
       mixedContentMode="always"
-      allowingReadAccessToURL="*"
+      // allowingReadAccessToURL="*"
       javaScriptEnabled={true}
       allowFileAccess={true}
       allowFileAccessFromFileURLs={true}
